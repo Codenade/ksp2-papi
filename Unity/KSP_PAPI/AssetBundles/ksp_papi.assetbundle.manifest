@@ -1,0 +1,37 @@
+ManifestFileVersion: 0
+CRC: 955727810
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 96b3a59b33e382e821f072b806abaf2d
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 609107f7614ed9e102dc6668e69183f1
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/KSP_PAPI/KSP_PAPI.png
+- Assets/KSP_PAPI/KSP_PAPI.mat
+- Assets/KSP_PAPI/KSP_PAPI.prefab
+- Assets/KSP_PAPI/KSP_PAPI.shader
+- Assets/KSP_PAPI/KSP_PAPI.fbx
+Dependencies: []

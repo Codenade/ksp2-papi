@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: KSP_PAPI
+  m_EditorClassIdentifier: 
+  m_GroupName: KSP_PAPI
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 56cd4b839e58eee4fac9dac93a8cc853
+  m_SerializeEntries:
+  - m_GUID: 9e41f8f62e243db4e867301de969c272
+    m_Address: KSP_PAPI/KSP_PAPI.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 9f4f0322fbb6b0e468796bf9c5a90dd1
+    m_Address: KSP2_PAPI/KSP_PAPI.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2c9a7460bdce20343a193457cc9e2caa
+    m_Address: KSP2_PAPI/KSP_PAPI.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5d287f3333d23534f8d53fd7e12d9135
+    m_Address: KSP2_PAPI/KSP_PAPI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 54cf68e5891b8f64fb78b172f59dc99a
+    m_Address: KSP2_PAPI/KSP_PAPI.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: dceb69a4e249867439537f381572f8d8
+    m_Address: KSP2_PAPI/KSP_PAPI_Loader.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 32920b0e2f780534aa6f8e680adaccab, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: a69fc950c4ff94440a4ae4a381c69c6f, type: 2}
+    - {fileID: 11400000, guid: db045b04aabb36140b9edf65af1abc94, type: 2}

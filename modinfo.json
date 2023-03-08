@@ -1,0 +1,8 @@
+{
+	"APIVersion":"0.0.1.1",
+	"ModVersion":"0.0.0.0",
+	"ModName":"KSP2_PAPI",
+	"ModAuthor":"Codenade",
+	"ModDescription":"Adds runway PAPIs",
+	"Catalog":"KSP2_PAPI/KSP_PAPI_Loader.prefab"
+}
