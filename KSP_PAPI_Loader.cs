@@ -105,6 +105,7 @@ namespace KSP2_PAPI
             Log(MethodBase.GetCurrentMethod());
 
             DontDestroyOnLoad(this);
+
 #if ON_SCREEN_LOG
             //InvokeRepeating("FindObjectAtCursor", .5f, .5f);
             gameObject.AddComponent<ZzzLog>();
@@ -226,7 +227,9 @@ namespace KSP2_PAPI
             Log(MethodBase.GetCurrentMethod());
             if (parent != null)
             {
-                AsyncOperationHandle<GameObject> operation = Addressables.InstantiateAsync("Assets/KSP_PAPI/KSP_PAPI.prefab");
+                
+                
+                AsyncOperationHandle<GameObject> operation = GameManager.Instance.Game.Assets.CreateAsyncRaw("Assets/KSP_PAPI/KSP_PAPI.prefab");
                 operation.WaitForCompletion();
                 if (operation.Status == AsyncOperationStatus.Failed)
                 {
