@@ -1,6 +1,7 @@
 ﻿//#define POSITIONING // define for in game keybinds to bring the papi into position
 //#define LIGHTSADJUST // define for in game keybinds to change different properties of the attached lights
 //#define ON_SCREEN_LOG
+//#define DBG_OBJECT_HOVER
 
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,12 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.InputSystem;
 using System.Linq;
 using System.Collections;
+using KSP.Modding;
+using KSP.IO;
+using KSP.Messages;
+using KSP.Sim;
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 
 namespace KSP2_PAPI
 {
@@ -56,9 +63,68 @@ namespace KSP2_PAPI
     }
 #endif
 
-    public class KSP_PAPI_Loader : KerbalMonoBehaviour
+#if DBG_OBJECT_HOVER
+    public class DbgObjHover : MonoBehaviour
     {
-        // TODO: not urgent: do some cleanup
+        void OnGUI()
+        {
+            GUILayout.BeginArea(new Rect(Screen.width - 400, 0, 400, Screen.height));
+            Ray cursorRay = Camera.main.ScreenPointToRay(Mouse.Position);
+            string objName = "";
+            if (Physics.Raycast(cursorRay, out RaycastHit hitInfo))
+            {
+                objName = hitInfo.transform.gameObject.name;
+            }
+            GUILayout.Label(objName);
+            GUILayout.EndArea();
+        }
+    }
+#endif
+#if POSITIONING
+    public class DbgPapiPos : MonoBehaviour
+    {
+        public GameObject TrackedObj { get; set; }
+        
+        void OnGUI()
+        {
+            if (!(TrackedObj is null))
+            {
+                GUILayout.BeginArea(new Rect(Screen.width/2, 200, 400, 400));
+                GUILayout.Label($"Name: {TrackedObj.name}" +
+                                $"Position: {TrackedObj.transform.localPosition}" +
+                                $"Rotation: {TrackedObj.transform.localRotation.eulerAngles}");
+                GUILayout.EndArea();
+            }
+        }
+    }
+#endif
+    public class ConfigData
+    {
+        public List<PapiData> PapiData { get; set; }
+    }
+
+    public struct Vector3Data
+    {
+        public float x { get; set; }
+        public float y { get; set; }
+        public float z { get; set; }
+
+        public static implicit operator Vector3(Vector3Data v3d) => new Vector3(v3d.x, v3d.y, v3d.z);
+    }
+
+    public class PapiData
+    {
+        public string ID { get; set; }
+        public string ParentName { get; set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "Position")]
+        public Vector3Data LocalPosition { get; set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "Rotation")]
+        public Vector3Data LocalRotation { get; set; }
+    }
+
+    public class KSP_PAPI_Loader : MonoBehaviour
+    {
+        ConfigData configData;
         GameObject ksc_papi_09_a;
         GameObject ksc_papi_27_a;
         GameObject ksc_papi_09_b;
@@ -68,6 +134,8 @@ namespace KSP2_PAPI
         string runway_b_name = "col_box_runwayB";
 #if POSITIONING || LIGHTSADJUST
         Dictionary<string, KeyBinding> keyBindings;
+        GameObject movethis;
+        int movethisIdx;
 #endif
         Vector3    ksc_papi_27_a_position;
         Quaternion ksc_papi_27_a_rotation;
@@ -78,9 +146,59 @@ namespace KSP2_PAPI
         Vector3    ksc_papi_09_b_position;
         Quaternion ksc_papi_09_b_rotation;
 
+        public void OnEnable()
+        {
+            GameManager.Instance.Game.Messages.Subscribe<GameStateChangedMessage>(OnGameStateChanged);
+        }
+
+        public void OnDisable()
+        {
+            GameManager.Instance.Game.Messages.Unsubscribe<GameStateChangedMessage>(OnGameStateChanged);
+        }
+
+        public void UpdatePapi()
+        {
+            foreach (PapiData papiData in configData.PapiData)
+            {
+                GameObject newPapi = GameObject.Find(papiData.ID);
+                if (newPapi is null)
+                    CreatePAPI(ref newPapi, GameObject.Find(papiData.ParentName), papiData.LocalPosition, Quaternion.Euler(papiData.LocalRotation), papiData.ID);
+            }
+        }
+
+        public void ReloadConfig()
+        {
+            foreach (PapiData papiData in configData.PapiData)
+            {
+                GameObject o = GameObject.Find(papiData.ID);
+                if (!(o is null))
+                    o.DestroyGameObject();
+            }
+            foreach (KSP2Mod mod in GameManager.Instance.Game.KSP2ModManager.CurrentMods)
+            {
+                if (mod.ModName == "KSP_PAPI" || mod.ModName == "KSP2_PAPI")
+                {
+                    Log($"Reloaded Config");
+                    configData = IOProvider.FromJsonFile<ConfigData>(Path.Combine(mod.ModRootPath, "config.json"));
+                }
+            }
+            UpdatePapi();
+        }
+
         public void Awake()
         {
             Log(MethodBase.GetCurrentMethod());
+            configData = new ConfigData();
+            foreach (KSP2Mod mod in GameManager.Instance.Game.KSP2ModManager.CurrentMods)
+            {
+                if (mod.ModName == "KSP_PAPI" || mod.ModName == "KSP2_PAPI")
+                {
+                    Log($"Mod root path: {mod.ModRootPath}");
+                    Log($"Config path: {Path.Combine(mod.ModRootPath, "config.json")}");
+                    configData = IOProvider.FromJsonFile<ConfigData>(Path.Combine(mod.ModRootPath, "config.json"));
+                }
+            }
+            InvokeRepeating(nameof(UpdatePapi), 5, 30);
             //GameManager.Instance.Game.Input.Global.ToggleDebugWindow.ChangeCompositeBinding("OneModifier");
             //GameManager.Instance.Game.Input.Global.ToggleDebugWindow.ChangeBinding("Binding")
             //    .WithPath("<Keyboard>/f12");
@@ -107,11 +225,14 @@ namespace KSP2_PAPI
             DontDestroyOnLoad(this);
 
 #if ON_SCREEN_LOG
-            //InvokeRepeating("FindObjectAtCursor", .5f, .5f);
             gameObject.AddComponent<ZzzLog>();
+#endif
+#if DBG_OBJECT_HOVER
+            gameObject.AddComponent<DbgObjHover>();
 #endif
 
 #if POSITIONING
+            gameObject.AddComponent<DbgPapiPos>();
             keyBindings.Add("mod_x", new KeyBinding(KeyCode.J));
             keyBindings.Add("mod_y", new KeyBinding(KeyCode.K));
             keyBindings.Add("mod_z", new KeyBinding(KeyCode.L));
@@ -119,12 +240,37 @@ namespace KSP2_PAPI
             keyBindings.Add("mod_r", new KeyBinding(KeyCode.O));
             keyBindings.Add("mod_c", new KeyBinding(KeyCode.H));
             keyBindings.Add("mod_rst", new KeyBinding(KeyCode.P));
+            keyBindings.Add("mod_nxt", new KeyBinding(KeyCode.ScrollLock));
+            keyBindings.Add("mod_rld", new KeyBinding(KeyCode.F3));
+            movethis = GameObject.Find(configData.PapiData[0].ID);
+            movethisIdx = 0;
 #endif
 #if LIGHTSADJUST
             keyBindings.Add("light_size+", new KeyBinding(KeyCode.J));
             keyBindings.Add("light_size-", new KeyBinding(KeyCode.K));
             keyBindings.Add("light_show", new KeyBinding(KeyCode.H));
 #endif
+        }
+
+        void OnGameStateChanged(MessageCenterMessage msg)
+        {
+            Log(MethodBase.GetCurrentMethod());
+            GameState gameState = GameManager.Instance.Game.GlobalGameState.GetGameState().GameState;
+            GameState prevGameState = GameManager.Instance.Game.GlobalGameState.GetLastGameState().GameState;
+            bool show = (gameState == GameState.FlightView) || (gameState == GameState.KerbalSpaceCenter);
+            bool prevShow = (prevGameState == GameState.FlightView) || (prevGameState == GameState.KerbalSpaceCenter);
+            if ((show != prevShow) && show)
+            {
+                foreach (PapiData papiData in configData.PapiData)
+                {
+                    GameObject newPapi = null;
+                    Log("Parent Name");
+                    Log(papiData.ParentName);
+                    Log("GameObject");
+                    Log(GameObject.Find(papiData.ParentName));
+                    CreatePAPI(ref newPapi, GameObject.Find(papiData.ParentName), papiData.LocalPosition, Quaternion.Euler(papiData.LocalRotation), papiData.ID);
+                }
+            }
         }
 
 #if ON_SCREEN_LOG
@@ -138,33 +284,12 @@ namespace KSP2_PAPI
         }
 #endif
 
-        public void Update()
-        {
-            if (ksc_papi_27_a == null)
-            {
-                CreatePAPI(ref ksc_papi_27_a, GameObject.Find(runway_a_name), ksc_papi_27_a_position, ksc_papi_27_a_rotation);
-            }
-            if (ksc_papi_09_a == null)
-            {
-                CreatePAPI(ref ksc_papi_09_a, GameObject.Find(runway_a_name), ksc_papi_09_a_position, ksc_papi_09_a_rotation);
-            }
-            if (ksc_papi_27_b == null)
-            {
-                CreatePAPI(ref ksc_papi_27_b, GameObject.Find(runway_b_name), ksc_papi_27_b_position, ksc_papi_27_b_rotation);
-            }
-            if (ksc_papi_09_b == null)
-            {
-                CreatePAPI(ref ksc_papi_09_b, GameObject.Find(runway_b_name), ksc_papi_09_b_position, ksc_papi_09_b_rotation);
-            }
-        }
-
         public void FixedUpdate()
         {
 #if POSITIONING
-            GameObject movethis = ksc_papi_09_b;
             Vector3 movethis_position = ksc_papi_09_b_position;
             Quaternion movethis_rotation = ksc_papi_09_b_rotation;
-            if (movethis != null)
+            if (!(movethis is null))
             {
                 Vector3 a = new Vector3(keyBindings["mod_x"].GetKey(true) ? 1 : 0, keyBindings["mod_y"].GetKey(true) ? 1 : 0, keyBindings["mod_z"].GetKey(true) ? 1 : 0);
                 if (a != Vector3.zero)
@@ -205,6 +330,29 @@ namespace KSP2_PAPI
                     movethis.transform.localRotation = movethis_rotation;
                 }
             }
+            else
+            {
+                movethis = GameObject.Find(configData.PapiData[movethisIdx].ID);
+            }
+            if (keyBindings["mod_nxt"].GetKeyDown(true))
+            {
+                if (!keyBindings["mod_n"].GetKey(true))
+                {
+                    movethisIdx = movethisIdx + 1 >= configData.PapiData.Count ? configData.PapiData.Count - 1 : movethisIdx + 1;
+                    movethis = GameObject.Find(configData.PapiData[movethisIdx].ID);
+                    GetComponent<DbgPapiPos>().TrackedObj = movethis;
+                }
+                else
+                {
+                    movethisIdx = movethisIdx - 1 < 0 ? 0 : movethisIdx - 1;
+                    movethis = GameObject.Find(configData.PapiData[movethisIdx].ID);
+                    GetComponent<DbgPapiPos>().TrackedObj = movethis;
+                }
+            }
+            if (keyBindings["mod_rld"].GetKeyDown(true))
+            {
+                ReloadConfig();
+            }
 #endif
 #if LIGHTSADJUST
             if (keyBindings["light_size+"].GetKey(true) && testPapi != null)
@@ -222,13 +370,11 @@ namespace KSP2_PAPI
 #endif
         }
 
-        void CreatePAPI(ref GameObject papi, GameObject parent, Vector3 position, Quaternion rotation)
+        void CreatePAPI(ref GameObject papi, GameObject parent, Vector3 position, Quaternion rotation, string name)
         {
             Log(MethodBase.GetCurrentMethod());
             if (parent != null)
             {
-                
-                
                 AsyncOperationHandle<GameObject> operation = GameManager.Instance.Game.Assets.CreateAsyncRaw("Assets/KSP_PAPI/KSP_PAPI.prefab");
                 operation.WaitForCompletion();
                 if (operation.Status == AsyncOperationStatus.Failed)
@@ -238,6 +384,7 @@ namespace KSP2_PAPI
                 else
                 {
                     papi = operation.Result;
+                    papi.name = name;
                     papi.AddComponent<KSP_PAPI>();
                     papi.transform.parent = parent.transform;
                     papi.transform.localPosition = position;
@@ -253,12 +400,17 @@ namespace KSP2_PAPI
 
         void Log(object o)
         {
-            Debug.Log("[KSP_PAPI]: " + o);
+            Debug.Log("[KSP_PAPI]: " + (o is null ? "null" : o));
         }
 
         void LogError(object o)
         {
             Debug.LogError("[KSP_PAPI]: (ERROR) -> " + o);
+        }
+
+        void LogLine(string msg = "Log", [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Log(msg + " at line " + lineNumber + " (" + caller + ")");
         }
     }
 }
