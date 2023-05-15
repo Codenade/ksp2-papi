@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace ksp2_papi_bepinex
 {
-    [BepInPlugin("ksp2-papi-bepinex", "KSP2 PAPI", "0.0.0.0")]//PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
+    [BepInPlugin("ksp2-papi-bepinex", "KSP2 PAPI", "0.0.0.2")]//PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     public class Plugin : BaseUnityPlugin
     {
         private void Awake()
@@ -24,10 +24,10 @@ namespace ksp2_papi_bepinex
     {
         static void Postfix(KSP2Mod __instance)
         {
-            if (__instance.ModName == "KSP_PAPI")
+            if (__instance.ModName == "KSP2_PAPI")
             {
                 Assembly assembly = Assembly.LoadFrom(__instance.ModRootPath + IOProvider.DirectorySeparatorCharacter.ToString() + "ksp2_papi.dll");
-                new GameObject("KSP_PAPI").AddComponent(assembly.GetType("KSP2_PAPI.KSP_PAPI_Loader"));
+                new GameObject("KSP2_PAPI").AddComponent(assembly.GetType("KSP2_PAPI.KSP_PAPI_Loader"));
             }
         }
     }

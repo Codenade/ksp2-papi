@@ -125,26 +125,14 @@ namespace KSP2_PAPI
     public class KSP_PAPI_Loader : MonoBehaviour
     {
         ConfigData configData;
-        GameObject ksc_papi_09_a;
-        GameObject ksc_papi_27_a;
-        GameObject ksc_papi_09_b;
-        GameObject ksc_papi_27_b;
 
-        string runway_a_name = "col_box_runwayA";
-        string runway_b_name = "col_box_runwayB";
 #if POSITIONING || LIGHTSADJUST
         Dictionary<string, KeyBinding> keyBindings;
         GameObject movethis;
         int movethisIdx;
+        Vector3 papi_pos = Vector3.zero;
+        Quaternion papi_rot = Quaternion.Euler(Vector3.zero);
 #endif
-        Vector3    ksc_papi_27_a_position;
-        Quaternion ksc_papi_27_a_rotation;
-        Vector3    ksc_papi_09_a_position;
-        Quaternion ksc_papi_09_a_rotation;
-        Vector3    ksc_papi_27_b_position;
-        Quaternion ksc_papi_27_b_rotation;
-        Vector3    ksc_papi_09_b_position;
-        Quaternion ksc_papi_09_b_rotation;
 
         public void OnEnable()
         {
@@ -208,14 +196,6 @@ namespace KSP2_PAPI
 #if POSITIONING || LIGHTSADJUST
             keyBindings = new Dictionary<string, KeyBinding>();
 #endif
-            ksc_papi_27_a_position = new Vector3(-2207, 960, 6);
-            ksc_papi_27_a_rotation = Quaternion.Euler(0, 270, 270);
-            ksc_papi_09_a_position   = new Vector3(-1991, -4305, 6);
-            ksc_papi_09_a_rotation   = Quaternion.Euler(0, 90, 90);
-            ksc_papi_27_b_position   = new Vector3(-2449, 960, 6);
-            ksc_papi_27_b_rotation   = Quaternion.Euler(0, 270, 270);
-            ksc_papi_09_b_position   = new Vector3(-2228, -4305, 6);
-            ksc_papi_09_b_rotation   = Quaternion.Euler(0, 90, 90);
         }
 
         public void Start()
@@ -242,13 +222,15 @@ namespace KSP2_PAPI
             keyBindings.Add("mod_rst", new KeyBinding(KeyCode.P));
             keyBindings.Add("mod_nxt", new KeyBinding(KeyCode.ScrollLock));
             keyBindings.Add("mod_rld", new KeyBinding(KeyCode.F3));
-            movethis = GameObject.Find(configData.PapiData[0].ID);
-            movethisIdx = 0;
 #endif
 #if LIGHTSADJUST
             keyBindings.Add("light_size+", new KeyBinding(KeyCode.J));
             keyBindings.Add("light_size-", new KeyBinding(KeyCode.K));
             keyBindings.Add("light_show", new KeyBinding(KeyCode.H));
+#endif
+#if POSITIONING || LIGHTSADJUST
+            movethis = GameObject.Find(configData.PapiData[0].ID);
+            movethisIdx = 0;
 #endif
         }
 
@@ -287,8 +269,8 @@ namespace KSP2_PAPI
         public void FixedUpdate()
         {
 #if POSITIONING
-            Vector3 movethis_position = ksc_papi_09_b_position;
-            Quaternion movethis_rotation = ksc_papi_09_b_rotation;
+            Vector3 movethis_position = papi_pos;
+            Quaternion movethis_rotation = papi_rot;
             if (!(movethis is null))
             {
                 Vector3 a = new Vector3(keyBindings["mod_x"].GetKey(true) ? 1 : 0, keyBindings["mod_y"].GetKey(true) ? 1 : 0, keyBindings["mod_z"].GetKey(true) ? 1 : 0);
@@ -355,17 +337,17 @@ namespace KSP2_PAPI
             }
 #endif
 #if LIGHTSADJUST
-            if (keyBindings["light_size+"].GetKey(true) && testPapi != null)
+            if (keyBindings["light_size+"].GetKey(true) && movethis != null)
             {
-                testPapi.GetComponent<KSP_PAPI>().LightSize += 0.05f;
+                movethis.GetComponent<KSP_PAPI>().LightSize += 0.05f;
             }
-            else if (keyBindings["light_size-"].GetKey(true) && testPapi != null)
+            else if (keyBindings["light_size-"].GetKey(true) && movethis != null)
             {
-                testPapi.GetComponent<KSP_PAPI>().LightSize -= 0.05f;
+                movethis.GetComponent<KSP_PAPI>().LightSize -= 0.05f;
             }
             else if (keyBindings["light_show"].GetKeyDown(true))
             {
-                Log(testPapi.GetComponent<KSP_PAPI>().LightSize);
+                Log(movethis.GetComponent<KSP_PAPI>().LightSize);
             }
 #endif
         }
@@ -375,11 +357,11 @@ namespace KSP2_PAPI
             Log(MethodBase.GetCurrentMethod());
             if (parent != null)
             {
-                AsyncOperationHandle<GameObject> operation = GameManager.Instance.Game.Assets.CreateAsyncRaw("Assets/KSP_PAPI/KSP_PAPI.prefab");
+                AsyncOperationHandle<GameObject> operation = GameManager.Instance.Game.Assets.CreateAsyncRaw("KSP2_PAPI/KSP_PAPI.prefab");
                 operation.WaitForCompletion();
                 if (operation.Status == AsyncOperationStatus.Failed)
                 {
-                    LogError("Failed to load prefab \"Assets/KSP_PAPI/KSP_PAPI.prefab\"");
+                    LogError("Failed to load prefab \"KSP2_PAPI/KSP_PAPI.prefab\"");
                 }
                 else
                 {

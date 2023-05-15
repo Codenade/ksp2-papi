@@ -12,13 +12,13 @@ namespace KSP2_PAPI
         public float[] Slopes { get; set; } = new float[] { 2.5f, 2.8f, 3.2f, 3.5f };
         /// <summary>Area in which the lights transistion between colors. Unit: Degrees</summary>
         public float TransitionRange { get; set; } = 0.1f;
-        /// <summary>Adjusts the size of the halo</summary>
+        /// <summary>Adjusts the size of the flare</summary>
         public float LightSize { get; set; } = 6.6f;
-        /// <summary>Angle at which the halos disappear (fade)</summary>
+        /// <summary>Angle at which the flares disappear (fade)</summary>
         public float CutoffAngle { get; set; } = 50f;
         /// <summary>Set the cutoff range</summary>
         public float CutoffMultiplier { get; set; } = 2f;
-        /// <summary>Distance at which the halos disappear (fade)</summary>
+        /// <summary>Distance at which the flares disappear (fade)</summary>
         public float MaxDistance { get; set; } = 20000f;
 
         Material mat;
@@ -53,15 +53,15 @@ namespace KSP2_PAPI
             lm.color = Color.Lerp(LowColor, HighColor, Mathf.Clamp01((angle - Slopes[1] + (TransitionRange / 2.0f)) / TransitionRange));
             rm.color = Color.Lerp(LowColor, HighColor, Mathf.Clamp01((angle - Slopes[2] + (TransitionRange / 2.0f)) / TransitionRange));
             rr.color = Color.Lerp(LowColor, HighColor, Mathf.Clamp01((angle - Slopes[3] + (TransitionRange / 2.0f)) / TransitionRange));
-            float lsize = LightSize - Mathf.Clamp(LightSize * fade, 0, LightSize);
+            //float lsize = LightSize - Mathf.Clamp(LightSize * fade, 0, LightSize);
             ll.enabled = fade < 1f;
             lm.enabled = fade < 1f;
             rm.enabled = fade < 1f;
             rr.enabled = fade < 1f;
-            ll.range = lsize;
-            lm.range = lsize;
-            rm.range = lsize;
-            rr.range = lsize;
+            //ll.range = lsize;
+            //lm.range = lsize;
+            //rm.range = lsize;
+            //rr.range = lsize;
         }
     }
 }

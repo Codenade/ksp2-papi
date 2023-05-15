@@ -349,3 +349,5 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /Unity/KSP_PAPI/Library
+/Unity/KSP_PAPI/Assets/Scenes/test.unity
+/lib

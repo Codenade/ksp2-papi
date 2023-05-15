@@ -265,8 +265,11 @@
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.33f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="KSP_PAPI">
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Assets\KSP_PAPI\KSP_PAPI.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom\nunit.framework.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.33f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\mscorlib.dll</HintPath>
@@ -617,59 +620,55 @@
         <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.33f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Xml.XPath.XDocument.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TestRunner">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.TestRunner">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.CacheServer">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\UnityEditor.CacheServer.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\UnityEditor.CacheServer.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Addressables">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.Addressables.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.Addressables.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualStudio.Editor">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ScriptableBuildPipeline">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Addressables.Editor">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.Addressables.Editor.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.Addressables.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ResourceManager">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.ResourceManager.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.ResourceManager.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ScriptableBuildPipeline.Editor">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-        <HintPath>C:\Users\Dorian\source\repos\Codenade\KSP_PAPI\Unity\KSP_PAPI\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+        <HintPath>C:\Users\Dorian\source\repos\ksp2-papi\Unity\KSP_PAPI\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{50978b7a-eedb-c250-79de-7b8e2144f30a}</Project>
-      <Name>Assembly-CSharp</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

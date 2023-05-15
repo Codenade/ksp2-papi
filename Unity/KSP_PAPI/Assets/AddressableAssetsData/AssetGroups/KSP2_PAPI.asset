@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: KSP_PAPI
+  m_Name: KSP2_PAPI
   m_EditorClassIdentifier: 
-  m_GroupName: KSP_PAPI
+  m_GroupName: KSP2_PAPI
   m_Data:
     m_SerializedData: []
   m_GUID: 56cd4b839e58eee4fac9dac93a8cc853
   m_SerializeEntries:
   - m_GUID: 9e41f8f62e243db4e867301de969c272
-    m_Address: KSP_PAPI/KSP_PAPI.fbx
+    m_Address: KSP2_PAPI/KSP_PAPI.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 9f4f0322fbb6b0e468796bf9c5a90dd1
@@ -42,6 +42,14 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - default
+  - m_GUID: fca2410897401ce4c92d8085940f967a
+    m_Address: KSP2_PAPI/flare.flare
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 430b98143cf36ea47b6c71c92487b99b
+    m_Address: KSP2_PAPI/flare.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 32920b0e2f780534aa6f8e680adaccab, type: 2}
   m_SchemaSet:
