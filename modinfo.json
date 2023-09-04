@@ -1,8 +1,0 @@
-{
-	"APIVersion":"0.0.1.1",
-	"ModVersion":"0.0.0.2",
-	"ModName":"KSP2_PAPI",
-	"ModAuthor":"Codenade",
-	"ModDescription":"Adds runway PAPIs",
-	"Catalog":"addressables/catalog.json"
-}

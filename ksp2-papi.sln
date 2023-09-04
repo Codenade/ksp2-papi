@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ksp2-papi", "ksp2-papi.csproj", "{A503AE3A-719F-4404-8578-4AB6E57D676E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bepinex", "bepinex\bepinex.csproj", "{6CD13EE2-0924-4FBA-B3D3-4743ADC63513}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{A503AE3A-719F-4404-8578-4AB6E57D676E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A503AE3A-719F-4404-8578-4AB6E57D676E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A503AE3A-719F-4404-8578-4AB6E57D676E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6CD13EE2-0924-4FBA-B3D3-4743ADC63513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CD13EE2-0924-4FBA-B3D3-4743ADC63513}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CD13EE2-0924-4FBA-B3D3-4743ADC63513}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CD13EE2-0924-4FBA-B3D3-4743ADC63513}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,26 @@
+{
+    "name": "ksp2-papi",
+    "rootNamespace": "",
+    "references": [
+        "GUID:69448af7b92c7f342b298e06a37122aa",
+        "GUID:c5ecc461727906345a35491a0440694f",
+        "GUID:9e24947de15b9834991c9d8411ea37cf",
+        "GUID:5c1ff9bd975acec488150743d53a93ca",
+        "GUID:0244ca4987514734a84f74195d54113d",
+        "GUID:1c66728ad60364b82bf095d383b87458",
+        "GUID:343deaaf83e0cee4ca978e7df0b80d21",
+        "GUID:f06555f75b070af458a003d92f9efb00",
+        "GUID:b07f7b40954778446807c622908ff890"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        ""
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
