@@ -69,7 +69,7 @@ Task("Build")
 			});
 		}
 		Information("Copying assets to output directory");
-		CopyDirectory("./ksp2-papi-assets/Library/com.unity.addressables/aa/windows", "./build/BepInEx/plugins/ksp2-papi/addressables");
+		CopyDirectory("./ksp2-papi-assets/Library/com.unity.addressables/aa/Windows", "./build/BepInEx/plugins/ksp2-papi/addressables");
 	});
 
 Task("Pack")
