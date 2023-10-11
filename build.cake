@@ -38,28 +38,36 @@ Task("Build")
 		// Find unity editor 2020.3.33f1
 		Information("Trying to find Unity Editor version 2020.3.33f1");
 		var unityEditor = FindUnityEditor(2020, 3, 33, 'f');
-		if (unityEditor is null) throw new CakeException();
-		
-		// Set unity log file location according to: https://docs.unity3d.com/Manual/LogFiles.html
-		FilePath unityLogLocation = File("");
-		if (IsRunningOnLinux()) unityLogLocation = File(@"~/.config/unity3d/Editor.log");
-		if (IsRunningOnMacOs()) unityLogLocation = File(@"~/Library/Logs/Unity/Editor.log");
-		if (IsRunningOnWindows()) unityLogLocation = ExpandEnvironmentVariables(File(@"%LOCALAPPDATA%\Unity\Editor\Editor.log"));
-		
-		Information("Building assets");
-		UnityEditor(unityEditor, new UnityEditorArguments
+		if (unityEditor is null && !BuildSystem.GitHubActions.IsRunningOnGitHubActions)
 		{
-			BatchMode = true,
-			NoGraphics = true,
-			Quit = true,
-			ProjectPath = MakeAbsolute(Directory("./ksp2-papi-assets")),
-			ExecuteMethod = "BuildAssets.PerformBuild",
-			LogFile = unityLogLocation
-		}, new UnityEditorSettings
+			throw new CakeException("Could not find Unity Editor 2020.3.33f1");
+		}
+		else if (BuildSystem.GitHubActions.IsRunningOnGitHubActions)
 		{
-			RealTimeLog = false
-		});
-
+			Information("Unity asset build already done by GitHub Actions workflow");
+		}
+		else
+		{
+			// Set unity log file location according to: https://docs.unity3d.com/Manual/LogFiles.html
+			FilePath unityLogLocation = File("");
+			if (IsRunningOnLinux()) unityLogLocation = File(@"~/.config/unity3d/Editor.log");
+			if (IsRunningOnMacOs()) unityLogLocation = File(@"~/Library/Logs/Unity/Editor.log");
+			if (IsRunningOnWindows()) unityLogLocation = ExpandEnvironmentVariables(File(@"%LOCALAPPDATA%\Unity\Editor\Editor.log"));
+			
+			Information("Building assets");
+			UnityEditor(unityEditor, new UnityEditorArguments
+			{
+				BatchMode = true,
+				NoGraphics = true,
+				Quit = true,
+				ProjectPath = MakeAbsolute(Directory("./ksp2-papi-assets")),
+				ExecuteMethod = "BuildAssets.PerformBuild",
+				LogFile = unityLogLocation
+			}, new UnityEditorSettings
+			{
+				RealTimeLog = false
+			});
+		}
 		Information("Copying assets to output directory");
 		CopyDirectory("./ksp2-papi-assets/Library/com.unity.addressables/aa/windows", "./build/BepInEx/plugins/ksp2-papi/addressables");
 	});

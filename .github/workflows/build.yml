@@ -25,6 +25,19 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
       with:
         unityVersion: 2020.3.33f1
+    
+    - name: Unity - Build assets
+      uses: game-ci/unity-builder@v3
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      with:
+        targetPlatform: StandaloneWindows64
+        unityVersion: 2020.3.33f1
+        projectPath: ksp2-papi-assets
+        buildMethod: BuildAssets.PerformBuild
+        versioning: None
         
     - name: Build
       uses: cake-build/cake-action@v1.4.1
