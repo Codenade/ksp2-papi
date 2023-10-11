@@ -1,140 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A503AE3A-719F-4404-8578-4AB6E57D676E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ksp2_papi</RootNamespace>
-    <AssemblyName>ksp2-papi</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>build/BepInEx/plugins/ksp2-papi</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>build/BepInEx/plugins/ksp2-papi</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>$(KSP2_PATH)/BepInEx/core/0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(KSP2_PATH)/KSP2_x64_Data/Managed/Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>$(KSP2_PATH)/BepInEx/core/BepInEx.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ksp2-inputbinder">
-      <HintPath>..\ksp2-inputbinder\build\BepInEx\plugins\inputbinder\ksp2-inputbinder.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(KSP2_PATH)\KSP2_x64_Data\Managed\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json.UnityConverters">
-      <HintPath>$(KSP2_PATH)\KSP2_x64_Data\Managed\Newtonsoft.Json.UnityConverters.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Unity.Addressables">
-      <HintPath>$(KSP2_PATH)/KSP2_x64_Data/Managed/Unity.Addressables.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.InputSystem">
-      <HintPath>$(KSP2_PATH)/KSP2_x64_Data/Managed/Unity.InputSystem.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.Mathematics">
-      <HintPath>$(KSP2_PATH)/KSP2_x64_Data/Managed/Unity.Mathematics.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.ResourceManager">
-      <HintPath>$(KSP2_PATH)/KSP2_x64_Data/Managed/Unity.ResourceManager.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>$(KSP2_PATH)/KSP2_x64_Data/Managed/UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(KSP2_PATH)/KSP2_x64_Data/Managed/UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>$(KSP2_PATH)/KSP2_x64_Data/Managed/UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>$(KSP2_PATH)/KSP2_x64_Data/Managed/UnityEngine.PhysicsModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>$(KSP2_PATH)/KSP2_x64_Data/Managed/UnityEngine.UIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IGTools">
-      <HintPath>$(KSP2_PATH)\KSP2_x64_Data\Managed\IGTools.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Intercept.Metrics">
-      <HintPath>$(KSP2_PATH)\KSP2_x64_Data\Managed\Intercept.Metrics.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KSPLogging">
-      <HintPath>$(KSP2_PATH)\KSP2_x64_Data\Managed\KSPLogging.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="main\AssetUtils.cs" />
-    <Compile Include="main\ConfigGui.cs" />
-    <Compile Include="main\CSFlareUtil.cs" />
-    <Compile Include="main\DataContainers.cs" />
-    <Compile Include="main\FlareOcclusion.cs" />
-    <Compile Include="main\PapiManager.cs" />
-    <Compile Include="main\Logger.cs" />
-    <Compile Include="main\ModInfo.cs" />
-    <Compile Include="main\KSP2_PAPI_Plugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ksp2-papi-assets\Assets\Scripts\PapiBehaviour.cs" />
-    <Compile Include="ksp2-papi-assets\Assets\Scripts\Papi2Behaviour.cs" />
-    <Compile Include="ksp2-papi-assets\Assets\Scripts\Papi4Behaviour.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="papis.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)/Microsoft.CSharp.targets" />
-  <ProjectExtensions />
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Version>0.0.0.1</Version>
+		<EnableDefaultItems>false</EnableDefaultItems>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="BepInEx.BaseLib" Version="5.4.21" />
+		<PackageReference Include="HarmonyX" Version="2.10.2" />
+		<PackageReference Include="KerbalSpaceProgram2.GameLibs" Version="0.1.4" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="UnityEngine.Modules" Version="2020.3.33.1" />
+		<PackageReference Include="Unity.InputSystem" Version="1.5.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="./main/**/*.cs" />
+		<None Include="./*"/>
+	</ItemGroup>
 </Project>
