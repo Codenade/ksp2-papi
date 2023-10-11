@@ -32,6 +32,7 @@ Task("Build")
 
 		Information("Copying assembly build productis to output directory");
 		CopyFileToDirectory($"./bin/{configuration}/netstandard2.0/ksp2-papi.dll", Directory("./build/BepInEx/plugins/ksp2-papi/"));
+		CopyFileToDirectory("./papis.json", Directory("./build/BepInEx/plugins/ksp2-papi/"));
 		if (configuration == "Debug")
 			CopyFileToDirectory($"./bin/{configuration}/netstandard2.0/ksp2-papi.pdb", Directory("./build/BepInEx/plugins/ksp2-papi/"));
 

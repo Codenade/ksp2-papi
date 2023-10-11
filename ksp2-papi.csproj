@@ -18,7 +18,4 @@
 		<None Include="./*" />
 		<None Include="./.github/**/*" />
 	</ItemGroup>
-	<ItemGroup>
-	  <None Include=".github\workflows\activate.yml" />
-	</ItemGroup>
 </Project>
