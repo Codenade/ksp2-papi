@@ -1,4 +1,4 @@
-﻿# Modified version of the example at https://game.ci/docs/github/activation/
+# Modified version of the example at https://game.ci/docs/github/activation/
 name: Acquire activation file
 on:
   workflow_dispatch: {}
