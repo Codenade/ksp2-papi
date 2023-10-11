@@ -28,9 +28,20 @@ jobs:
         unityVersion: 2020.3.33f1
         projectPath: ksp2-papi-assets
         buildMethod: BuildAssets.PerformBuild
-        
+    
+    - name: List files
+      run: |
+        echo -------------------------------- cwd --------------------------------------
+        find ./
+        echo .
+        echo -------------------------- workspace dir ----------------------------------
+        find ${{ github.workspace }}
+
     - name: Build
-      uses: cake-build/cake-action@v1.4.1
+      run: |
+        dotnet tool restore
+        dotnet cake
+      #uses: cake-build/cake-action@v1.4.1
       
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.3
