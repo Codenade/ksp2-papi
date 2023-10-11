@@ -18,6 +18,7 @@ Task("Clean")
 	});
 
 Task("Build")
+	.IsDependentOn("Clean")
 	.Does(() =>
 	{
 		Information("Create output directory");
