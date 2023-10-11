@@ -15,6 +15,10 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="./main/**/*.cs" />
-		<None Include="./*"/>
+		<None Include="./*" />
+		<None Include="./.github/**/*" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include=".github\workflows\activate.yml" />
 	</ItemGroup>
 </Project>
