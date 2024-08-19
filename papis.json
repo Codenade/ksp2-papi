@@ -1,14 +1,16 @@
 ﻿{
+  "UseViewFrustrumCulling": true,
+  "UseViewDirectionCulling": true,
   "PapiData": [
     {
       "ID": "KSC_09L",
       "ParentName": "col_box_runwayA",
-      "Position": {
+      "LocalPosition": {
         "x": -2021,
         "y": -4305,
         "z": 5.4
       },
-      "Rotation": {
+      "LocalRotation": {
         "x": 0.4,
         "y": 90,
         "z": 90
@@ -17,12 +19,12 @@
     {
       "ID": "KSC_27R",
       "ParentName": "col_box_runwayA",
-      "Position": {
+      "LocalPosition": {
         "x": -2207,
         "y": 960,
         "z": 6
       },
-      "Rotation": {
+      "LocalRotation": {
         "x": 0,
         "y": 270,
         "z": 270
@@ -31,12 +33,12 @@
     {
       "ID": "KSC_09R",
       "ParentName": "col_box_runwayB",
-      "Position": {
+      "LocalPosition": {
         "x": -2228,
         "y": -4305,
         "z": 6
       },
-      "Rotation": {
+      "LocalRotation": {
         "x": 0,
         "y": 90,
         "z": 90
@@ -45,12 +47,12 @@
     {
       "ID": "KSC_27L",
       "ParentName": "col_box_runwayB",
-      "Position": {
+      "LocalPosition": {
         "x": -2449,
         "y": 960,
         "z": 6
       },
-      "Rotation": {
+      "LocalRotation": {
         "x": 0,
         "y": 270,
         "z": 270
@@ -59,12 +61,12 @@
     {
       "ID": "Island_09",
       "ParentName": "ksc_landingstrip_01",
-      "Position": {
+      "LocalPosition": {
         "x": -702,
         "y": -0.5,
         "z": -128
       },
-      "Rotation": {
+      "LocalRotation": {
         "x": 0,
         "y": 347,
         "z": 0
@@ -73,12 +75,12 @@
     {
       "ID": "Island_27",
       "ParentName": "ksc_landingstrip_01",
-      "Position": {
+      "LocalPosition": {
         "x": 476,
         "y": -0.2,
         "z": -40
       },
-      "Rotation": {
+      "LocalRotation": {
         "x": 0,
         "y": 168,
         "z": 0

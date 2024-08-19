@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace ksp2_papi
 {
-    public static class CSFlareUtil
+    internal static class CSFlareUtil
     {
-        public static int[] AnalyzeImage(ComputeShader cs, RenderTexture rt, RenderTexture mask)
+        internal static Result AnalyzeImage(ComputeShader cs, RenderTexture rt, RenderTexture mask)
         {
             ComputeBuffer cb;
             int[] analysisResult;
@@ -25,7 +25,19 @@ namespace ksp2_papi
             cs.Dispatch(kernelMain, rt.width / 8, rt.height / 8, 1);
             cb.GetData(analysisResult);
             cb.Release();
-            return analysisResult;
+            return new Result(analysisResult[0], analysisResult[1]);
+        }
+
+        internal struct Result
+        {
+            internal int visible;
+            internal int total;
+
+            internal Result(int visible, int total)
+            {
+                this.visible = visible;
+                this.total = total;
+            }
         }
     }
 }

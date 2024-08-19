@@ -5,21 +5,21 @@ namespace ksp2_papi
 {
     public class Papi2Behaviour : MonoBehaviour
     {
-        public Color HighColor = Color.white;
-        public Color LowColor = Color.red;
-        public Color OffColor = Color.black;
-        public float[] Slopes = new float[2] { 2.8f, 3.2f };
-        public float TransitionRange = 0.1f;
-        public float CutoffAngle = 10f;
-        public float CutoffMultiplier = 0.1f;
-        public float MaxDistance = 50000f;
-        public float MinDistance = 50f;
-        public float HorizontalSeparation = 9f;
-        public float Off = 0f;
+        public readonly Color HighColor = Color.white;
+        public readonly Color LowColor = Color.red;
+        public readonly Color OffColor = Color.black;
+        public readonly float[] Slopes = new float[2] { 2.8f, 3.2f };
+        public const float TransitionRange = 0.1f;
+        public const float CutoffAngle = 10f;
+        public const float CutoffMultiplier = 0.1f;
+        public const float MaxDistance = 30000f;
+        public const float MinDistance = 50f;
+        public const float HorizontalSeparation = 9f;
+        public const float Off = 0f;
 
         private List<PapiBehaviour> _papis;
 
-        void Start()
+        private void Start()
         {
             _papis = new List<PapiBehaviour>
             {

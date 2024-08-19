@@ -21,34 +21,57 @@ MonoBehaviour:
     m_Address: ksp2-papi/papi_single.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5fc1acd73aa49204a8bdc894189e1974
     m_Address: ksp2-papi/papi_x2.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 05d3fe996f980f048b0abf9dd1c9a91f
     m_Address: ksp2-papi/papi_x4.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ccd8eb8e70221dd4c87b7fe591a4eca6
     m_Address: ksp2-papi/arrow_2.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fc2eab2315a0a154f93b9387f00806c2
     m_Address: ksp2-papi/arrow_10.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0e4a234f1280f3a4e8ad4e8e5e8a27b8
     m_Address: ksp2-papi/unlit.shader
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9331168677789474694ce46af8d27624
     m_Address: ksp2-papi/px-count.compute
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8e1d95c2885ec96418c58180d9757b8c
     m_Address: ksp2-papi/flare.flare
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1dca126daf4211043bef9333d2e39c5c
+    m_Address: ksp2-papi/alpha-only.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 787cbbb72bfdac741b2fcd75c3503fc7
+    m_Address: ksp2-papi/DepthCopy.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 845f1377ec0e0dd4ca41c6a0ff076a43
+    m_Address: ksp2-papi/add.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5358404b42c12074e94b77aa254c481a, type: 2}
   m_SchemaSet:

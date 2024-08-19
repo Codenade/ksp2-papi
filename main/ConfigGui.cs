@@ -21,7 +21,7 @@ namespace ksp2_papi
         private GameObject _arrow2Prefab;
         private GameObject _arrow10Prefab;
 
-        void Awake()
+        private void Awake()
         {
             Manager = PapiManager.Instance;
             _windowRect = new Rect(300f, 300f, 200f, 150f);
@@ -30,16 +30,16 @@ namespace ksp2_papi
             _localPosStepSize = "1";
             _localRotStepSize = "10";
             _selectedIdx = 0;
-            AssetUtils.CatalogLoaded += OnCatalogLoaded;
+            AssetUtils.AssetsLoaded += OnCatalogLoaded;
         }
 
-        void OnCatalogLoaded()
+        private void OnCatalogLoaded()
         {
-            AssetUtils.CatalogLoaded -= OnCatalogLoaded;
+            AssetUtils.AssetsLoaded -= OnCatalogLoaded;
             StartCoroutine(LoadAssets());
         }
 
-        IEnumerator LoadAssets()
+        private IEnumerator LoadAssets()
         {
             var operation = GameManager.Instance.Assets.LoadAssetAsync<GameObject>("ksp2-papi/arrow_2.prefab");
             yield return operation;
@@ -56,18 +56,18 @@ namespace ksp2_papi
             yield break;
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             Manager.ReloadedConfig += OnConfigReloaded;
             _simObject = GameManager.Instance.Game.SpaceSimulation.FindSimObjectByNameKey("Kerbin");
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             Manager.ReloadedConfig -= OnConfigReloaded;
         }
 
-        void OnConfigReloaded()
+        private void OnConfigReloaded()
         {
             _selectedIdx = 0;
         }
@@ -194,26 +194,6 @@ namespace ksp2_papi
                     Label("Does not exist yet");
             }
             GUI.DragWindow(new Rect(0, 0, 10000, 20));
-        }
-    }
-
-    public static class TransformUtils
-    {
-        public static string PathTo(this Transform i)
-        {
-            var remaining = 20;
-            var transform = i;
-            var o = "";
-            do
-            {
-                if (transform == null)
-                    return o;
-                o = transform.name + '/' + o;
-                transform = transform.parent;
-                remaining--;
-            }
-            while (remaining > 0);
-            return "?!?ERROR?!?: Incomplete path: " + o;
         }
     }
 }

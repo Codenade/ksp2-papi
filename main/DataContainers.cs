@@ -7,6 +7,8 @@ namespace ksp2_papi
     public class ConfigData
     {
         public List<PapiData> PapiData { get; set; }
+        public bool UseViewFrustrumCulling { get; set; }
+        public bool UseViewDirectionCulling { get; set; }
     }
 
     public struct Vector3Data
@@ -25,9 +27,7 @@ namespace ksp2_papi
     {
         public string ID { get; set; }
         public string ParentName { get; set; }
-        [JsonProperty(propertyName: "Position")]
         public Vector3Data LocalPosition { get; set; }
-        [JsonProperty(propertyName: "Rotation")]
         public Vector3Data LocalRotation { get; set; }
     }
 }

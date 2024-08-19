@@ -1,12 +1,14 @@
-Shader "ksp2-papi/flare"
+Shader "ksp2-papi/alphaonly"
 {
+    Properties
+    {
+        [MainTexture] _MainTex ("Texture", 2D) = "" {}
+    }
     SubShader
-    {        
-        Tags { "RenderType" = "OcclusionLensFlareSun" "IgnoreProjector" = "True" }
+    {
+        Tags { "RenderType"="Opaque" }
         Pass
         {
-            Conservative True
-
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -16,24 +18,31 @@ Shader "ksp2-papi/flare"
             struct appdata
             {
                 float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
             };
 
             struct v2f
             {
                 float4 vertex : SV_POSITION;
+                float4 uv : TEXCOORD0;
             };
+
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 UNITY_INITIALIZE_OUTPUT(v2f, o);
                 o.vertex = UnityObjectToClipPos(v.vertex);
+                TRANSFORM_TEX(v.uv, _MainTex);
                 return o;
             }
 
             fixed4 frag(v2f i) : SV_Target
             {
-                return fixed4(1,1,1,1);
+                float4 cols = tex2D(_MainTex, i.uv.xy);
+                return fixed4(cols.a,cols.a,cols.a,cols.a);
             }
             ENDCG
         }

@@ -23,7 +23,7 @@ Please [open an issue on github](https://github.com/Codenade/ksp2-papi/issues/ne
 ### Required software
 
 * [.Net SDK](https://dotnet.microsoft.com/en-us/download)
-* [Unity 2020.3.33](https://unity.com/releases/editor/archive)
+* [Unity 2022.3.5](https://unity.com/releases/editor/archive)
 
 ### Build instructions
 

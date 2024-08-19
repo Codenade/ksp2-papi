@@ -16,12 +16,19 @@ namespace ksp2_papi
         public Dictionary<string, GameObject> AllLightsInstances { get; set; }
         public Dictionary<string, Tuple<string, Vector3, Quaternion>> Data { get; set; }
         public GameObject PapiPrefab { get => _papiPrefab; }
+        public bool UseViewFrustrumCulling => _useViewFrustrumCulling;
+        public bool UseViewDirectionCulling => _useViewDirectionCulling;
         private static PapiManager _instance;
         private GameObject _papiPrefab;
         private ConfigGui _configGui;
+        private FlareOcclusionManager _flom;
         private InputAction _configGuiToggle;
+        private InputAction _debugGuiToggle;
+        private DebugGui _debugGui;
+        private bool _useViewFrustrumCulling;
+        private bool _useViewDirectionCulling;
 
-        public void Awake()
+        private void Awake()
         {
             if (_instance is null)
                 _instance = this;
@@ -29,10 +36,16 @@ namespace ksp2_papi
             Data = new Dictionary<string, Tuple<string, Vector3, Quaternion>>();
             ReloadConfig();
             _configGuiToggle = new InputAction("ksp2-papi.ConfigGuiToggle", InputActionType.Value, "<Keyboard>/p", null, null, "Button");
+            _debugGuiToggle = new InputAction("ksp2-papi.DebugGuiToggle", InputActionType.Value, "<Keyboard>/o", null, null, "Button");
             _configGui = gameObject.AddComponent<ConfigGui>();
             _configGui.enabled = false;
+            _flom = gameObject.AddComponent<FlareOcclusionManager>();
+#if DEBUG
+            _debugGui = gameObject.AddComponent<DebugGui>();
+            _debugGui.enabled = false;
+#endif
             AssetUtils.LoadAssets();
-            AssetUtils.CatalogLoaded += OnCatalogLoaded;
+            AssetUtils.AssetsLoaded += OnAssetsLoaded;
             //if (Harmony.HasAnyPatches("codenade-inputbinder"))
             //    if (Codenade.Inputbinder.Inputbinder.Instance is object)
             //        if (Codenade.Inputbinder.Inputbinder.Instance.IsInitialized)
@@ -59,27 +72,35 @@ namespace ksp2_papi
         //    }
         //}
 
-        public void OnEnable()
+        private void OnEnable()
         {
             GameManager.Instance.Game.Messages.PersistentSubscribe<FloatingOriginSnappedMessage>(OnFloatingOriginSnapped);
-            _configGuiToggle.performed += OnToggleConfigMenuAction;
+            _configGuiToggle.performed += ToggleConfigMenuAction;
             _configGuiToggle.Enable();
+#if DEBUG
+            _debugGuiToggle.performed += ToggleDebugMenu;
+            _debugGuiToggle.Enable();
+#endif
             //if (Harmony.HasAnyPatches("codenade-inputbinder"))
             //    Codenade.Inputbinder.Inputbinder.Initialized += Inputbinder_Initialized;
         }
 
-        public void OnDisable()
+        private void OnDisable()
         {
             GameManager.Instance.Game.Messages.Unsubscribe<FloatingOriginSnappedMessage>(OnFloatingOriginSnapped);
-            _configGuiToggle.performed -= OnToggleConfigMenuAction;
+            _configGuiToggle.performed -= ToggleConfigMenuAction;
             _configGuiToggle.Disable();
+#if DEBUG
+            _debugGuiToggle.performed -= ToggleDebugMenu;
+            _debugGuiToggle.Disable();
+#endif
             //if (Harmony.HasAnyPatches("codenade-inputbinder"))
             //    Codenade.Inputbinder.Inputbinder.Initialized -= Inputbinder_Initialized;
         }
 
-        private void OnCatalogLoaded()
+        private void OnAssetsLoaded()
         {
-            GameManager.Instance.Assets.Load<GameObject>(AssetUtils.Keys.papi_x4, result => _papiPrefab = result);
+            _papiPrefab = (GameObject)AssetUtils.Assets[AssetUtils.Keys.papi_x4];
         }
 
         public void UpdatePapi()
@@ -90,12 +111,17 @@ namespace ksp2_papi
                     AllLightsInstances[i.Key] = CreatePAPI(GameObject.Find(Data[i.Key].Item1)?.transform, Data[i.Key].Item2, Data[i.Key].Item3, i.Key);
         }
 
-        private void OnToggleConfigMenuAction(InputAction.CallbackContext _)
+#if DEBUG
+        public void ToggleDebugMenu(InputAction.CallbackContext _ = default)
         {
-            ToggleConfigMenu();
+            if (_debugGui.enabled)
+                _debugGui.enabled = false;
+            else
+                _debugGui.enabled = true;
         }
+#endif
 
-        public void ToggleConfigMenu()
+        public void ToggleConfigMenuAction(InputAction.CallbackContext _ = default)
         {
             if (_configGui.enabled)
                 _configGui.enabled = false;
@@ -103,19 +129,21 @@ namespace ksp2_papi
                 _configGui.enabled = true;
         }
 
-        public void ReloadConfig(bool autoReload = false)
+        public void ReloadConfig(bool autoCreatePapis = false)
         {
-            Logger.Log($"Reloading PAPI data");
+            Logger.Log($"Reloading config");
             DestroyAllLights();
             var configData = IOProvider.FromJsonFile<ConfigData>(ModInfo.PapisJsonPath);
             AllLightsInstances.Clear();
             Data.Clear();
+            _useViewFrustrumCulling = configData.UseViewFrustrumCulling;
+            _useViewDirectionCulling = configData.UseViewDirectionCulling;
             foreach (var d in configData.PapiData)
             {
                 AllLightsInstances.Add(d.ID, null);
                 Data.Add(d.ID, new Tuple<string, Vector3, Quaternion>(d.ParentName, d.LocalPosition, Quaternion.Euler(d.LocalRotation)));
             }
-            if (autoReload)
+            if (autoCreatePapis)
                 UpdatePapi();
             ReloadedConfig?.Invoke();
         }
@@ -127,12 +155,12 @@ namespace ksp2_papi
                     Destroy(i.Value);
         }
 
-        void OnFloatingOriginSnapped(MessageCenterMessage msg)
+        private void OnFloatingOriginSnapped(MessageCenterMessage msg)
         {
             UpdatePapi();
         }
 
-        GameObject CreatePAPI(Transform parent, Vector3 position, Quaternion rotation, string name)
+        public GameObject CreatePAPI(Transform parent, Vector3 position, Quaternion rotation, string name)
         {
             if (parent != null)
             {

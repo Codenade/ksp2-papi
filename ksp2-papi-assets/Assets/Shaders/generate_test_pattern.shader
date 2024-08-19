@@ -1,25 +1,26 @@
-Shader "ksp2-papi/flare"
+Shader "ksp2-papi/generate_test_pattern"
 {
     SubShader
-    {        
-        Tags { "RenderType" = "OcclusionLensFlareSun" "IgnoreProjector" = "True" }
+    {
+        Cull Off ZWrite On ZTest Always
+
         Pass
         {
-            Conservative True
-
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma target 2.0
+
             #include "UnityCG.cginc"
 
             struct appdata
             {
                 float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
             };
 
             struct v2f
             {
+                float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
             };
 
@@ -28,12 +29,15 @@ Shader "ksp2-papi/flare"
                 v2f o;
                 UNITY_INITIALIZE_OUTPUT(v2f, o);
                 o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
                 return o;
             }
 
-            fixed4 frag(v2f i) : SV_Target
+            fixed4 frag (v2f i, out float outDepth : SV_Depth) : SV_Target
             {
-                return fixed4(1,1,1,1);
+                fixed col = i.uv.x;
+                outDepth = col;
+                return fixed4(col, col, col, col);
             }
             ENDCG
         }

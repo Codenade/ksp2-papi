@@ -18,29 +18,35 @@ namespace ksp2_papi
         private Transform _headTransform;
         private Material _mat;
 #if !UNITY_BUILD && !UNITY_EDITOR
-        private FlareOcclusion occlusion;
         private LensFlare _flare;
 #endif
 
-        void Awake()
+        private void Awake()
         {
 #if !UNITY_BUILD && !UNITY_EDITOR
             _headTransform = transform.Find("papi_head");
             _mat = _headTransform.GetComponent<MeshRenderer>().material;
             _flare = transform.Find("papi_head/flare").gameObject.AddComponent<LensFlare>();
-            occlusion = transform.Find("papi_head/flare").gameObject.AddComponent<FlareOcclusion>();
-            occlusion.flare = _flare;
+            _flare.flare = (Flare)AssetUtils.Assets[AssetUtils.Keys.flare];
+            FlareOcclusionManager.Instance.RegisterFlare(_flare);
 #endif
         }
 
-        void Update()
+#if !UNITY_BUILD && !UNITY_EDITOR
+        private void OnDestroy()
         {
+            FlareOcclusionManager.Instance.UnregisterFlare(_flare);
+        }
+#endif
+
+        private void Update()
+        {
+#if !UNITY_BUILD && !UNITY_EDITOR
             var camPos = (Vector3)(_headTransform.worldToLocalMatrix * ToVector4(Camera.main.transform.position, 1));
             var angle = Mathf.Rad2Deg * Mathf.Atan(camPos.y / -camPos.x);
             var off = Mathf.Clamp01(Off + Mathf.Clamp01((camPos.magnitude - MaxDistance) * CutoffMultiplier) + Mathf.Clamp01((Vector3.Angle(Vector3.left, camPos) - CutoffAngle) * CutoffMultiplier));
             _mat.SetFloat("_Angle", angle);
             _mat.SetFloat("_Off", off);
-#if !UNITY_BUILD && !UNITY_EDITOR
             _flare.color = Color.Lerp(Color.Lerp(LowColor, HighColor, Mathf.Clamp01(angle / TransitionRange + 0.5f)), OffColor, off);
             _flare.enabled = off != 1 && camPos.magnitude >= MinDistance;
 #endif
