@@ -56,7 +56,7 @@ namespace ksp2_papi
             public static readonly string arrow_2 = "ksp2-papi/arrow_2.prefab";
             public static readonly string arrow_10 = "ksp2-papi/arrow_10.prefab";
             public static readonly string flare = "ksp2-papi/flare.flare";
-            public static readonly string shader_alpha_only = "ksp2-papi/alpha-only.shader";
+            public static readonly string shader_conservativefill = "ksp2-papi/conservativefill.shader";
             public static readonly string shader_copy_depth = "ksp2-papi/DepthCopy.shader";
             public static readonly string shader_add = "ksp2-papi/add.shader";
         };

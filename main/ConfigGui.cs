@@ -1,5 +1,4 @@
 ﻿using KSP.Game;
-using KSP.Sim.impl;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -13,7 +12,6 @@ namespace ksp2_papi
 
         private Rect _windowRect;
         private int _selectedIdx;
-        private SimulationObjectModel _simObject;
         private string _posStepSize;
         private string _rotStepSize;
         private string _localPosStepSize;
@@ -59,7 +57,6 @@ namespace ksp2_papi
         private void OnEnable()
         {
             Manager.ReloadedConfig += OnConfigReloaded;
-            _simObject = GameManager.Instance.Game.SpaceSimulation.FindSimObjectByNameKey("Kerbin");
         }
 
         private void OnDisable()

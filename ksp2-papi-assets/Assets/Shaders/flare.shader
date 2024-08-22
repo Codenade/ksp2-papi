@@ -2,15 +2,13 @@ Shader "ksp2-papi/flare"
 {
     SubShader
     {        
-        Tags { "RenderType" = "OcclusionLensFlareSun" "IgnoreProjector" = "True" }
+        Tags { "RenderType" = "FlareOcclusion" "IgnoreProjector" = "True" }
+        Conservative True
         Pass
         {
-            Conservative True
-
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma target 2.0
             #include "UnityCG.cginc"
 
             struct appdata

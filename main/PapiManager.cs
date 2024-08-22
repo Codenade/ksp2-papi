@@ -21,10 +21,11 @@ namespace ksp2_papi
         private static PapiManager _instance;
         private GameObject _papiPrefab;
         private ConfigGui _configGui;
-        private FlareOcclusionManager _flom;
         private InputAction _configGuiToggle;
+#if DEBUG
         private InputAction _debugGuiToggle;
         private DebugGui _debugGui;
+#endif
         private bool _useViewFrustrumCulling;
         private bool _useViewDirectionCulling;
 
@@ -36,41 +37,19 @@ namespace ksp2_papi
             Data = new Dictionary<string, Tuple<string, Vector3, Quaternion>>();
             ReloadConfig();
             _configGuiToggle = new InputAction("ksp2-papi.ConfigGuiToggle", InputActionType.Value, "<Keyboard>/p", null, null, "Button");
+#if DEBUG
             _debugGuiToggle = new InputAction("ksp2-papi.DebugGuiToggle", InputActionType.Value, "<Keyboard>/o", null, null, "Button");
+#endif
             _configGui = gameObject.AddComponent<ConfigGui>();
             _configGui.enabled = false;
-            _flom = gameObject.AddComponent<FlareOcclusionManager>();
+            gameObject.AddComponent<FlareOcclusionManager>();
 #if DEBUG
             _debugGui = gameObject.AddComponent<DebugGui>();
             _debugGui.enabled = false;
 #endif
             AssetUtils.LoadAssets();
             AssetUtils.AssetsLoaded += OnAssetsLoaded;
-            //if (Harmony.HasAnyPatches("codenade-inputbinder"))
-            //    if (Codenade.Inputbinder.Inputbinder.Instance is object)
-            //        if (Codenade.Inputbinder.Inputbinder.Instance.IsInitialized)
-            //            Inputbinder_Initialized();
         }
-
-        //public void Inputbinder_Initialized()
-        //{
-        //    if (Harmony.HasAnyPatches("codenade-inputbinder"))
-        //    {
-        //        if (Codenade.Inputbinder.Inputbinder.Instance.ActionManager.Actions.TryGetValue(_configGuiToggle.name, out var act))
-        //        {
-        //            _configGuiToggle.performed -= OnToggleConfigMenuAction;
-        //            _configGuiToggle.Disable();
-        //            _configGuiToggle.Dispose();
-        //            _configGuiToggle = act.Action;
-        //            _configGuiToggle.performed += OnToggleConfigMenuAction;
-        //            _configGuiToggle.Enable();
-        //        }
-        //        else
-        //        {
-        //            Codenade.Inputbinder.Inputbinder.Instance.ActionManager.AddAction(_configGuiToggle);
-        //        }
-        //    }
-        //}
 
         private void OnEnable()
         {
@@ -81,8 +60,6 @@ namespace ksp2_papi
             _debugGuiToggle.performed += ToggleDebugMenu;
             _debugGuiToggle.Enable();
 #endif
-            //if (Harmony.HasAnyPatches("codenade-inputbinder"))
-            //    Codenade.Inputbinder.Inputbinder.Initialized += Inputbinder_Initialized;
         }
 
         private void OnDisable()
@@ -94,8 +71,6 @@ namespace ksp2_papi
             _debugGuiToggle.performed -= ToggleDebugMenu;
             _debugGuiToggle.Disable();
 #endif
-            //if (Harmony.HasAnyPatches("codenade-inputbinder"))
-            //    Codenade.Inputbinder.Inputbinder.Initialized -= Inputbinder_Initialized;
         }
 
         private void OnAssetsLoaded()

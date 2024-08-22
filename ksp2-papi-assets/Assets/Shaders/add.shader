@@ -2,8 +2,10 @@ Shader "ksp2-papi/add"
 {
     Properties
     {
-        _Tex1 ("Texture", 2D) = "black" {}
-        _Tex2 ("Texture", 2D) = "black" {}
+        _Tex1 ("Tex1", 2D) = "black" {}
+        _Tex1_Offset ("Tex1 Offset", Range(-1.0, 1.0)) = 0.0
+        _Tex2 ("Tex2", 2D) = "black" {}
+        _Tex2_Offset ("Tex2 Offset", Range(-1.0, 1.0)) = 0.0
     }
     SubShader
     {
@@ -33,7 +35,9 @@ Shader "ksp2-papi/add"
             };
 
             sampler2D_float _Tex1;
+            float _Tex1_Offset;
             sampler2D_float _Tex2;
+            float _Tex2_Offset;
 
             v2f vert(appdata v)
             {
@@ -46,8 +50,8 @@ Shader "ksp2-papi/add"
 
             fixed4 frag(v2f i, out float outDepth : SV_Depth) : SV_Target
             {
-                float d1 = SAMPLE_DEPTH_TEXTURE(_Tex1, i.uv);
-                float d2 = SAMPLE_DEPTH_TEXTURE(_Tex2, i.uv);
+                float d1 = SAMPLE_DEPTH_TEXTURE(_Tex1, i.uv) + _Tex1_Offset;
+                float d2 = SAMPLE_DEPTH_TEXTURE(_Tex2, i.uv) + _Tex2_Offset;
                 outDepth = max(d1, d2);
                 #ifdef OUTPUT_COLOR
                 return fixed4(d1, d2, outDepth, outDepth > 0);

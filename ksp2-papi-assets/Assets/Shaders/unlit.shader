@@ -1,7 +1,6 @@
-Shader "ksp2-papi/unlit"
+Shader "Papimod/unlit"
 {
     CGINCLUDE
-	#pragma target 2.0
 	#include "UnityCG.cginc"
 	#include "HLSLSupport.cginc"
 
@@ -31,15 +30,11 @@ Shader "ksp2-papi/unlit"
 	    return fixed4(0, 0, 0, 1);
 	}
 
-	fixed4 frag_sun(v2f i) : SV_Target
+	fixed4 frag_flare(v2f i) : SV_Target
 	{
 		return fixed4(1, 1, 1, 1);
 	}
 
-	fixed4 frag_exp(v2f i) : SV_Target
-	{
-		return fixed4(1, 1, 0, 1);
-	}
 	ENDCG
 
 	SubShader
@@ -47,27 +42,26 @@ Shader "ksp2-papi/unlit"
 		Tags { "RenderType" = "Opaque" "IgnoreProjector" = "True" }
 		Pass
 		{
-			// Fog { Mode Off }
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
 			ENDCG
 		}
-
 		UsePass "Standard/ShadowCaster"
 	}
 
-	SubShader
-	{
-		Tags { "RenderType" = "OcclusionLensFlareSun" "IgnoreProjector" = "True" }
-		Pass
-		{
-			Conservative True
-			// Fog { Mode Off }
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag_sun
-			ENDCG
-		}
-	}
+	// SubShader
+	// {
+	// 	Tags { "RenderType" = "FlareOcclusion" "IgnoreProjector" = "True" }
+	// 	Conservative True
+	// 	Pass
+	// 	{
+	// 		Name "Mark"
+	// 		CGPROGRAM
+	// 		#pragma vertex vert
+	// 		#pragma fragment frag_flare
+	// 		ENDCG
+	// 	}
+	// 	UsePass "Standard/ShadowCaster"
+	// }
 }

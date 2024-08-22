@@ -42,7 +42,10 @@ namespace ksp2_papi
         private void Update()
         {
 #if !UNITY_BUILD && !UNITY_EDITOR
-            var camPos = (Vector3)(_headTransform.worldToLocalMatrix * ToVector4(Camera.main.transform.position, 1));
+            var mainCamera = Camera.main;
+            if (mainCamera == null)
+                return;
+            var camPos = (Vector3)(_headTransform.worldToLocalMatrix * mainCamera.transform.position.ToVector4(1));
             var angle = Mathf.Rad2Deg * Mathf.Atan(camPos.y / -camPos.x);
             var off = Mathf.Clamp01(Off + Mathf.Clamp01((camPos.magnitude - MaxDistance) * CutoffMultiplier) + Mathf.Clamp01((Vector3.Angle(Vector3.left, camPos) - CutoffAngle) * CutoffMultiplier));
             _mat.SetFloat("_Angle", angle);
@@ -51,7 +54,5 @@ namespace ksp2_papi
             _flare.enabled = off != 1 && camPos.magnitude >= MinDistance;
 #endif
         }
-
-        public static Vector4 ToVector4(Vector3 a, float w) => new Vector4(a.x, a.y, a.z, w);
     }
 }

@@ -58,7 +58,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1dca126daf4211043bef9333d2e39c5c
-    m_Address: ksp2-papi/alpha-only.shader
+    m_Address: ksp2-papi/conservativefill.shader
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

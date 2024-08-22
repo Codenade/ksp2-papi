@@ -1,12 +1,14 @@
-﻿using RTG;
+﻿#if DEBUG
 using System.Linq;
-using UnityEngine;
 using static UnityEngine.GUILayout;
+#endif
+using UnityEngine;
 
 namespace ksp2_papi
 {
     internal class DebugGui : MonoBehaviour
     {
+#if DEBUG
         public PapiManager Manager { get; private set; }
         public FlareOcclusionManager FlareOcclusionManager { get; private set; }
 
@@ -15,7 +17,6 @@ namespace ksp2_papi
         private int _cameraLayerIdx;
         private bool _changeCameraLayer;
 
-#if DEBUG
         private void Awake()
         {
             Manager = PapiManager.Instance;
@@ -53,69 +54,86 @@ namespace ksp2_papi
             if (id != 2000)
                 return;
             var c = FlareOcclusionManager.Flares.ElementAtOrDefault(_selectedIdx);
+            var mainCamera = Camera.main;
             using (new VerticalScope())
             {
                 if (!_changeCameraLayer)
-                    _changeCameraLayer = Toggle(_changeCameraLayer, "Change camera layer?");
+                {
+                    if (Button("Change camera layer (you will need to restart to revert this)"))
+                        _changeCameraLayer = true;
+                }
                 else
                 {
-                        using (new HorizontalScope())
+                    using (new HorizontalScope())
+                    {
+                        if (Button("<", Width(20)))
                         {
-                            if (Button("<", Width(20)))
-                            {
-                                if (_cameraLayerIdx > 0)
-                                    _cameraLayerIdx--;
-                                else
-                                    _cameraLayerIdx = 31;
-                                FlareOcclusionManager.flareCamera.cullingMask = 1 << _cameraLayerIdx;
-                            }
-                            FlexibleSpace();
-                            Label($"Used camera layer: {_cameraLayerIdx}");
-                            FlexibleSpace();
-                            if (Button(">", Width(20)))
-                            {
-                                if (_cameraLayerIdx < 31)
-                                    _cameraLayerIdx++;
-                                else
-                                    _cameraLayerIdx = 0;
-                                FlareOcclusionManager.flareCamera.cullingMask = 1 << _cameraLayerIdx;
-                            }
+                            if (_cameraLayerIdx > 0)
+                                _cameraLayerIdx--;
+                            else
+                                _cameraLayerIdx = 31;
+                            FlareOcclusionManager.flareCamera.cullingMask = 1 << _cameraLayerIdx;
                         }
+                        FlexibleSpace();
+                        Label($"Used camera layer: {_cameraLayerIdx}");
+                        FlexibleSpace();
+                        if (Button(">", Width(20)))
+                        {
+                            if (_cameraLayerIdx < 31)
+                                _cameraLayerIdx++;
+                            else
+                                _cameraLayerIdx = 0;
+                            FlareOcclusionManager.flareCamera.cullingMask = 1 << _cameraLayerIdx;
+                        }
+                    }
                 }
                 using (new HorizontalScope())
                 {
                     if (Button("<", Width(20)))
                         _selectedIdx = _selectedIdx > 0 ? _selectedIdx - 1 : _selectedIdx;
                     FlexibleSpace();
-                    Label($"{c.transform.parent.parent.parent.gameObject.name}/{c.transform.parent.parent.gameObject.name}");
+                    Label($"{c?.transform.parent?.parent?.parent?.gameObject.name}/{c?.transform.parent?.parent?.gameObject.name}");
                     FlexibleSpace();
                     if (Button(">", Width(20)))
                         _selectedIdx = _selectedIdx >= FlareOcclusionManager.Flares.Length - 1 ? _selectedIdx : _selectedIdx + 1;
-                    FlareOcclusionManager.debugfl = FlareOcclusionManager.Flares[_selectedIdx];
+                    c = FlareOcclusionManager.debugfl = FlareOcclusionManager.Flares.ElementAtOrDefault(_selectedIdx);
                 }
                 Space(12);
-                Label($"Camera info {Camera.main.transform.name} {Camera.main.transform.position}");
-                if (c != default(LensFlare))
+                FlareOcclusionManager.tex1offset = HorizontalSlider(FlareOcclusionManager.tex1offset, -0.000001f, 0.000001f);
+                FlareOcclusionManager.tex2offset = HorizontalSlider(FlareOcclusionManager.tex2offset, -0.000001f, 0.000001f);
+                Space(12);
+                if (mainCamera != null)
+                    Label($"Camera info {mainCamera.transform.name} {mainCamera.transform.position}");
+                if (c != null)
                 {
                     Label("path: " + c.gameObject.transform.PathTo());
                     Space(8);
                     Label($"Pixels visible: {FlareOcclusionManager.resultdebug.visible}");
                     Label($"Pixels total  : {FlareOcclusionManager.resultdebug.total}");
                     Label($"Visibility    : {FlareOcclusionManager.visibility}");
-                    Label($"is visible: {GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(FlareOcclusionManager.flareCamera), c.GetComponent<Renderer>().bounds)}");
+                    if (mainCamera != null)
+                        Label($"GeometryUtility.TestPlanesAABB: {GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(mainCamera), c.GetComponent<Renderer>().bounds)}");
 
                     Box(FlareOcclusionManager.dbgMask, Width(512), Height(288));
                     Box(FlareOcclusionManager.dbgFT, Width(512), Height(288));
                 }
                 else
-                    Label("Does not exist yet");
+                    Label("No data");
             }
             GUI.DragWindow(new Rect(0, 0, 10000, 20));
         }
 #else
+        private bool startCalledOnce;
+
+        private void Start()
+        {
+            startCalledOnce = true;
+        }
+
         private void OnEnable()
         {
-            Logger.Error("Tried to open DebugGui in non-debug build!");
+            if (startCalledOnce)
+                Logger.Error("Tried to open DebugGui in non-debug build!");
         }
 #endif
     }
