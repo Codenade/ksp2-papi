@@ -1,24 +1,39 @@
 name: Build
 
-on: 
+on:
   pull_request:
     branches:
     - master
-    - dev
   push:
     branches:
     - master
-    - dev
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    
+
     - name: Checkout
       uses: actions/checkout@v4
-    
+
+    - name: Restore Cake
+      run: dotnet tool restore
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Dotnet Build
+      run: dotnet cake --target Build -v Diagnostic
+
+    - uses: actions/cache@v4
+      with:
+        path: ksp2-papi-assets
+        key: Library-ksp2papi
+        restore-keys: |
+          Library-ksp2papi-
+          Library-
+
     - name: Setup Unity - Build assets
       uses: game-ci/unity-builder@v4
       env:
@@ -30,17 +45,11 @@ jobs:
         unityVersion: 2022.3.5f1
         projectPath: ksp2-papi-assets
         buildMethod: BuildAssets.PerformBuild
-    
-    - name: Remove build directory
-      run: |
-        sudo rm -dfr ./build
-        sleep 5 # delay before next step
+        buildsPath: ksp2-papi-assets/Build
 
-    - name: Cake Build
-      run: |
-        dotnet tool restore
-        dotnet cake
-      
+    - name: Pack Files
+      run: dotnet cake --target Pack -e -v Diagnostic
+
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
       with:
