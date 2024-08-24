@@ -7,8 +7,6 @@ namespace ksp2_papi
     public class ConfigData
     {
         public List<PapiData> PapiData { get; set; }
-        public bool UseViewFrustrumCulling { get; set; }
-        public bool UseViewDirectionCulling { get; set; }
     }
 
     public struct Vector3Data

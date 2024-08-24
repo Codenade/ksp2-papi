@@ -8,8 +8,11 @@ namespace ksp2_papi
     [BepInPlugin("ksp2-papi", "KSP2 PAPI", MyPluginInfo.PLUGIN_VERSION)]
     public class KSP2_PAPI_Plugin : BaseUnityPlugin
     {
+        public static KSP2_PAPI_Plugin Instance { get; protected set; }
+
         private void Awake()
         {
+            Instance ??= this;
             var harmony = new Harmony("ksp2-papi");
             harmony.PatchAll(typeof(Patches));
         }

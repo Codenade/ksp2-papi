@@ -1,4 +1,4 @@
-﻿#if DEBUG
+﻿#if INCLUDE_DEBUG_GUI
 using System.Linq;
 using static UnityEngine.GUILayout;
 #endif
@@ -8,7 +8,7 @@ namespace ksp2_papi
 {
     internal class DebugGui : MonoBehaviour
     {
-#if DEBUG
+#if INCLUDE_DEBUG_GUI
         public PapiManager Manager { get; private set; }
         public FlareOcclusionManager FlareOcclusionManager { get; private set; }
 
@@ -24,7 +24,6 @@ namespace ksp2_papi
             _windowRect = new Rect(1300f, 100f, 200f, 150f);
             _selectedIdx = 0;
             _cameraLayerIdx = 0;
-            FlareOcclusionManager.flareCamera.cullingMask = 1 << _cameraLayerIdx;
         }
 
         private void OnEnable()
@@ -75,7 +74,7 @@ namespace ksp2_papi
                             FlareOcclusionManager.flareCamera.cullingMask = 1 << _cameraLayerIdx;
                         }
                         FlexibleSpace();
-                        Label($"Used camera layer: {_cameraLayerIdx}");
+                        Label($"Used camera layer: {_cameraLayerIdx}, Layer name: {LayerMask.LayerToName(_cameraLayerIdx)}");
                         FlexibleSpace();
                         if (Button(">", Width(20)))
                         {
@@ -99,7 +98,9 @@ namespace ksp2_papi
                     c = FlareOcclusionManager.debugfl = FlareOcclusionManager.Flares.ElementAtOrDefault(_selectedIdx);
                 }
                 Space(12);
+                Label($"tex1offset: {FlareOcclusionManager.tex1offset}");
                 FlareOcclusionManager.tex1offset = HorizontalSlider(FlareOcclusionManager.tex1offset, -0.000001f, 0.000001f);
+                Label($"tex2offset: {FlareOcclusionManager.tex2offset}");
                 FlareOcclusionManager.tex2offset = HorizontalSlider(FlareOcclusionManager.tex2offset, -0.000001f, 0.000001f);
                 Space(12);
                 if (mainCamera != null)
@@ -111,6 +112,7 @@ namespace ksp2_papi
                     Label($"Pixels visible: {FlareOcclusionManager.resultdebug.visible}");
                     Label($"Pixels total  : {FlareOcclusionManager.resultdebug.total}");
                     Label($"Visibility    : {FlareOcclusionManager.visibility}");
+                    Label($"Skipped       : {FlareOcclusionManager.skipped}");
                     if (mainCamera != null)
                         Label($"GeometryUtility.TestPlanesAABB: {GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(mainCamera), c.GetComponent<Renderer>().bounds)}");
 
@@ -133,7 +135,7 @@ namespace ksp2_papi
         private void OnEnable()
         {
             if (startCalledOnce)
-                Logger.Error("Tried to open DebugGui in non-debug build!");
+                Logger.Error("Tried to open DebugGui in a build without INCLUDE_DEBUG_GUI defined!");
         }
 #endif
     }

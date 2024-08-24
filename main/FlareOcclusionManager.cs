@@ -13,19 +13,20 @@ namespace ksp2_papi
     {
         public static FlareOcclusionManager Instance => _instance;
 
-        public const float TEX2OFFSET = -6.56E-07f;
+        public const float TEXOFFSET = -6.56E-07f;
 
         internal LensFlare[] Flares => _flares.ToArray();
         internal Camera flareCamera;
-#if DEBUG
+#if INCLUDE_DEBUG_GUI
         internal bool debug;
         internal LensFlare debugfl;
         internal CSFlareUtil.Result resultdebug;
         internal float visibility;
         internal RenderTexture dbgMask;
         internal RenderTexture dbgFT;
-        internal float tex1offset;
-        internal float tex2offset = TEX2OFFSET;
+        internal float tex1offset = TEXOFFSET;
+        internal float tex2offset = TEXOFFSET;
+        internal bool skipped;
 #endif
 
         private static FlareOcclusionManager _instance;
@@ -45,6 +46,11 @@ namespace ksp2_papi
         private MethodInfo _pqsRenderPrepass;
         private FieldInfo _pqsRT0;
         private Mesh _flareMesh;
+        private Vector2Int _lastCameraRes;
+        private int _idTex1;
+        private int _idTex2;
+        private int _idTexOffset1;
+        private int _idTexOffset2;
 
         public void RegisterFlare(LensFlare flare)
         {
@@ -66,37 +72,28 @@ namespace ksp2_papi
             _flares = new List<LensFlare>();
             _pqsRenderer = null;
             _flareMesh = null;
-            UpdateResolution(new Vector2Int(Screen.currentResolution.width, Screen.currentResolution.height));
-            flareCamera = new GameObject("FlareCamera").AddComponent<Camera>();
-            flareCamera.gameObject.transform.SetParent(transform);
-            flareCamera.renderingPath = RenderingPath.Forward;
-            flareCamera.clearFlags = CameraClearFlags.SolidColor;
-            flareCamera.backgroundColor = Color.clear;
-            flareCamera.allowMSAA = false;
-            flareCamera.allowHDR = false;
-            flareCamera.targetTexture = _cameraTexture;
-            flareCamera.depthTextureMode = DepthTextureMode.Depth;
-            // --- cullingMask ---
-            // what I originally used: unchecked((int)(0xFFFFFFFF ^ ((1 << 10) | (1 << 29))));
-            // Flight camera: 753731 -> 0: Default, 1: TransparentFX, 6: UI.ResearchDevelopment, 15: Local.Scenery, 16: Internal.Scenery, 17: Local.Characters, 18: Render.Skybox
-            flareCamera.cullingMask = 753731 & unchecked((int)(0xFFFFFFFF ^ (1 << 1))) | (1 << 30);
-            flareCamera.useOcclusionCulling = true;
-            flareCamera.enabled = false;
-#if DEBUG
-            resultdebug = new CSFlareUtil.Result();
-#endif
-            _cmdBfr = new CommandBuffer();
-            _pqsRenderPrepass = typeof(PQSRenderer).GetMethod(nameof(PQSRenderer.RenderPrepass), BindingFlags.NonPublic | BindingFlags.Instance);
-            _pqsRT0 = typeof(PQSRenderer).GetField(nameof(PQSRenderer.PqsPrepassRenderTarget0), BindingFlags.Instance | BindingFlags.NonPublic);
+            _lastCameraRes = Vector2Int.zero;
             if (AssetUtils.NeverLoaded)
                 AssetUtils.AssetsLoaded += AssetsLoaded;
             else
                 AssetsLoaded();
+#if INCLUDE_DEBUG_GUI
+            resultdebug = new CSFlareUtil.Result();
+#endif
+            _pqsRenderPrepass = typeof(PQSRenderer).GetMethod(nameof(PQSRenderer.RenderPrepass), BindingFlags.NonPublic | BindingFlags.Instance);
+            _pqsRT0 = typeof(PQSRenderer).GetField(nameof(PQSRenderer.PqsPrepassRenderTarget0), BindingFlags.NonPublic | BindingFlags.Instance);
+            _idTex1 = Shader.PropertyToID("_Tex1");
+            _idTex2 = Shader.PropertyToID("_Tex2");
+            _idTexOffset1 = Shader.PropertyToID("_Tex1_Offset");
+            _idTexOffset2 = Shader.PropertyToID("_Tex2_Offset");
         }
 
-        internal void UpdateResolution(Vector2Int size)
+        internal void UpdateResolution(int x, int y)
         {
-            _cameraTexture = new RenderTexture(size.x, size.y, 32)
+            _lastCameraRes = new Vector2Int(x, y);
+            _cameraTexture?.Release();
+            _occludedTexture?.Release();
+            _cameraTexture = new RenderTexture(x, y, 32)
             {
                 filterMode = FilterMode.Point,
                 anisoLevel = 0
@@ -106,13 +103,16 @@ namespace ksp2_papi
                 filterMode = FilterMode.Point,
                 anisoLevel = 0
             };
-#if DEBUG
-            dbgMask = new RenderTexture(size.x, size.y, 32)
+#if INCLUDE_DEBUG_GUI
+            dbgMask?.Release();
+            dbgFT?.Release();
+            dbgMask = new RenderTexture(x, y, 32)
             {
                 filterMode = FilterMode.Bilinear
             };
             dbgFT = new RenderTexture(dbgMask);
 #endif
+            flareCamera.targetTexture = _cameraTexture;
         }
 
         private void AssetsLoaded()
@@ -130,23 +130,26 @@ namespace ksp2_papi
             };
             _addMaterial = new Material(_addShader);
             _flareMesh = ((GameObject)AssetUtils.Assets[AssetUtils.Keys.papi_single]).transform.Find("papi_head/flare").gameObject.GetComponent<MeshFilter>().sharedMesh;
-#if !DEBUG
-            _addMaterial.SetFloat("_Tex2_Offset", TEX2OFFSET);
-#endif
+            _addMaterial.SetFloat(_idTexOffset1, TEXOFFSET);
+            _addMaterial.SetFloat(_idTexOffset2, TEXOFFSET);
         }
 
         private void LateUpdate()
         {
+            var mainCamera = Camera.main;
+            if (mainCamera == null)
+                return;
+            if ((mainCamera.scaledPixelWidth != _lastCameraRes.x) || (mainCamera.scaledPixelHeight != _lastCameraRes.y))
+                UpdateResolution(mainCamera.scaledPixelWidth, mainCamera.scaledPixelHeight);
             if (_pqsRenderer == null)
                 _pqsRenderer = GameManager.Instance.Game.CameraManager?.CurrentPQS?.PQSRenderer;
             else
-                CalculateOcclusionAll();
+                CalculateOcclusionAll(mainCamera);
         }
 
-        private void CalculateOcclusionAll()
+        private void CalculateOcclusionAll(Camera mainCamera)
         {
-            var mainCamera = Camera.main;
-            if (mainCamera == null || _flares.Count == 0)
+            if (_flares.Count == 0)
                 return;
 
             _cmdBfr.Clear();
@@ -161,11 +164,11 @@ namespace ksp2_papi
 
             _pqsRenderPrepass.Invoke(_pqsRenderer, null);
 
-            _addMaterial.SetTexture("_Tex1", _cameraTexture, RenderTextureSubElement.Depth);
-            _addMaterial.SetTexture("_Tex2", (RenderTexture)_pqsRT0.GetValue(_pqsRenderer), RenderTextureSubElement.Depth);
-#if DEBUG
-            _addMaterial.SetFloat("_Tex1_Offset", tex1offset);
-            _addMaterial.SetFloat("_Tex2_Offset", tex2offset);
+            _addMaterial.SetTexture(_idTex1, _cameraTexture, RenderTextureSubElement.Depth);
+            _addMaterial.SetTexture(_idTex2, (RenderTexture)_pqsRT0.GetValue(_pqsRenderer), RenderTextureSubElement.Depth);
+#if INCLUDE_DEBUG_GUI
+            _addMaterial.SetFloat(_idTexOffset1, tex1offset);
+            _addMaterial.SetFloat(_idTexOffset2, tex2offset);     
 #endif
             Graphics.Blit(null, _occludedTexture, _addMaterial);
 
@@ -189,7 +192,7 @@ namespace ksp2_papi
             foreach (var i in ctxt)
                 PostCalculateOcclusionSingle(i);
 
-#if DEBUG
+#if INCLUDE_DEBUG_GUI
             if (debug)
                 Graphics.CopyTexture(_occludedTexture, dbgFT);
 #endif
@@ -198,13 +201,22 @@ namespace ksp2_papi
         private SingleCalcContext PreCalculateOcclusionSingle(LensFlare flare, Plane[] cameraPlanes)
         {
             var renderer = flare.GetComponent<Renderer>();
-            if (PapiManager.Instance.UseViewFrustrumCulling && !GeometryUtility.TestPlanesAABB(cameraPlanes, renderer.bounds))
+            if ((PapiManager.Instance.UseFrustumCulling && !GeometryUtility.TestPlanesAABB(cameraPlanes, renderer.bounds)) ||
+                (PapiManager.Instance.UseBackfaceCulling && (Vector3.Angle(flare.transform.forward, cameraPlanes[4].normal) > 90f)))
             {
+#if INCLUDE_DEBUG_GUI
+                if (debug && debugfl == flare)
+                    skipped = true;
+#endif
                 flare.enabled = false;
                 return SingleCalcContext.Skip;
             }
+#if INCLUDE_DEBUG_GUI
+            else if (debug && debugfl == flare)
+                skipped = false;
+#endif
 
-            var mask = RenderTexture.GetTemporary(_occludedTexture.width, _occludedTexture.height, 24);
+            var mask = RenderTexture.GetTemporary(_occludedTexture.width, _occludedTexture.height, 32);
             mask.anisoLevel = 0;
             mask.filterMode = FilterMode.Point;
             _cmdBfr.SetRenderTarget(mask, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
@@ -224,7 +236,7 @@ namespace ksp2_papi
             if (context.skip)
                 return;
             var result = CSFlareUtil.AnalyzeImage(_cs, _occludedTexture, context.txtmask);
-#if DEBUG
+#if INCLUDE_DEBUG_GUI
             if (debug && debugfl == context.lflare)
                 Graphics.CopyTexture(context.txtmask, dbgMask);
             if (debug && debugfl == context.lflare)
@@ -236,7 +248,7 @@ namespace ksp2_papi
             if (result.total != 0 && result.visible != 0)
             {
                 context.lflare.enabled = true;
-                context.lflare.color *= result.visible / (float)result.total;
+                context.lflare.color *= result.total != 0 ? result.visible / (float)result.total : 0f;
             }
             else
                 context.lflare.enabled = false;
@@ -255,11 +267,34 @@ namespace ksp2_papi
             };
         }
 
-        private void OnDestroy()
+        private void OnEnable()
         {
+            flareCamera = new GameObject("FlareCamera").AddComponent<Camera>();
+            flareCamera.gameObject.transform.SetParent(transform);
+            flareCamera.renderingPath = RenderingPath.Forward;
+            flareCamera.clearFlags = CameraClearFlags.SolidColor;
+            flareCamera.backgroundColor = Color.clear;
+            flareCamera.allowMSAA = false;
+            flareCamera.allowHDR = false;
+            flareCamera.depthTextureMode = DepthTextureMode.Depth;
+            // --- cullingMask ---
+            // Flight camera: 753731 -> 0: Default, 1: TransparentFX, 6: UI.ResearchDevelopment, 15: Local.Scenery, 16: Internal.Scenery, 17: Local.Characters, 18: Render.Skybox
+            flareCamera.cullingMask = (int)(753731 & (0xFFFFFFFF ^ (1 << 1)));
+            flareCamera.useOcclusionCulling = true;
+            flareCamera.enabled = false;
+            var mainCamera = Camera.main;
+            if (mainCamera != null)
+                UpdateResolution(mainCamera.scaledPixelWidth, mainCamera.scaledPixelWidth);
+
+            _cmdBfr = new CommandBuffer();
+        }
+
+        private void OnDisable()
+        {
+            _lastCameraRes = Vector2Int.zero;
             _cameraTexture.Release();
             _occludedTexture.Release();
-#if DEBUG
+#if INCLUDE_DEBUG_GUI
             dbgFT.Release();
             dbgMask.Release();
 #endif

@@ -1,5 +1,6 @@
 ﻿using KSP.Game;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using static UnityEngine.GUILayout;
@@ -71,6 +72,8 @@ namespace ksp2_papi
 
         private void OnGUI()
         {
+            if (Manager.DisableConfigGui)
+                enabled = false;
             _windowRect = Window(1000, _windowRect, OnWindow, "Papi placement utility");
         }
 
@@ -81,6 +84,8 @@ namespace ksp2_papi
             var c = Manager.AllLightsInstances.ElementAtOrDefault(_selectedIdx);
             using (new VerticalScope())
             {
+                if (Button($"Reload PAPI Definitions ({Path.GetFileName(ModInfo.PapisJsonPath)})"))
+                    Manager.ReloadPapiDefinitions(true);
                 if (Toggle(Manager.AllLightsInstances.ContainsKey("debug_arrow"), "Create arrow"))
                 {
                     if (!Manager.AllLightsInstances.ContainsKey("debug_arrow"))
