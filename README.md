@@ -1,16 +1,26 @@
 ﻿# ksp2-papi
 
-Mod that adds [PAPI (Precision Approach Path Indicator)](https://en.wikipedia.org/wiki/Precision_approach_path_indicator) to Kerbal Space Program 2's runways.
+Mod that adds [PAPI (Precision Approach Path Indicator)](https://en.wikipedia.org/wiki/Precision_approach_path_indicator) lighting to Kerbal Space Program 2's runways.
+
+> [!IMPORTANT]
+> __If you are experiencing performance issues__, you can set the config option `use_pixel_counting` to `false` (or _No_ in SpaceWarp).
+>   
+> You can modify the mod settings using:
+> * [SpaceWarp](https://github.com/SpaceWarpDev/SpaceWarp)
+> * [BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager/blob/master/README.md)
+> * Manually by editing `BepInEx/config/ksp2-papi.cfg`
+>   
+> This will disable the pixel counting and fall back to unity's physics raycasting. When disabled however the mod will not account KSP2's distant terrain as it does not have colliders so you will see the flares through the terrain if you're far away from it.
 
 # Installation
 
-### Option 1 _~~(recommended)~~_
+### Use [CKAN](https://forum.kerbalspaceprogram.com/topic/197082-ckan-the-comprehensive-kerbal-archive-network-v1332-laplace-ksp-2-support/) _(recommended)_
 
-* ~~Install using [CKAN](https://forum.kerbalspaceprogram.com/topic/197082-ckan-the-comprehensive-kerbal-archive-network-v1332-laplace-ksp-2-support/)~~ _(not submitted to CKAN yet)_
+* This is the recommended way of installing KSP2 mods as it automatically installs dependencies.
 
-### Option 2
+### Manual Installation
 
-1. Install [BepInEx](https://docs.bepinex.dev/articles/user_guide/installation/index.html)
+1. Install [BepInEx](https://docs.bepinex.dev/articles/user_guide/installation/index.html) or [SpaceWarp](https://github.com/SpaceWarpDev/SpaceWarp)
 
 2. Extract the contents of ksp2-papi*.zip into KSP2's root directory or copy `BepInEx/plugins/ksp2-papi` into `Kerbal Space Program 2/BepInEx/plugins`
 
@@ -35,6 +45,6 @@ Mod that adds [PAPI (Precision Approach Path Indicator)](https://en.wikipedia.or
    Arguments enclosed in `[]` are optional.  
    The defaults when not provided are `--target Pack` and  `--configuration Release`.
 
-## Bug Reports and Feature Requests
+# Bug Reports and Feature Requests
 
 Found any bugs🦗? Have an idea to improve things💡? → [Open an issue on GitHub](https://github.com/Codenade/ksp2-papi/issues)
