@@ -33,7 +33,7 @@ Mod that adds [PAPI (Precision Approach Path Indicator)](https://en.wikipedia.or
 
 ### Build instructions
 
-1. Open Developer PowerShell for Visual Studio
+1. Open Windows PowerShell
 
 2. Clone this repository (either use `git clone` or download as `.zip`)
 
@@ -41,9 +41,16 @@ Mod that adds [PAPI (Precision Approach Path Indicator)](https://en.wikipedia.or
 
 4. Run `dotnet tool restore`
 
-5. Run `dotnet cake [--target {Clear|Build|Pack|Install|Uninstall|Start}] [--configuration {Release|Debug}]`  
+5. Run `dotnet cake [--target {Clear|Build|Pack|Install|Uninstall|Start}] [--configuration {Release|Debug}] [--ksp2-root <path>] [--skip-unity]`  
    Arguments enclosed in `[]` are optional.  
    The defaults when not provided are `--target Pack` and  `--configuration Release`.
+
+   * `--target` Select one of the build targets defined in `build.cake`.
+   * `--configuration` Select build configuration. 'Debug' will copy debug symbols to the output.
+   * `--ksp2-root` Tagets 'Install', 'Uninstall' and 'Start' need to know where your installation of KSP2 is located. If you don't want to set 'KSP2_PATH' in your environment to point to KSP2's installation directory you can specify it here.
+   * `--skip-unity` You may specify this option if you want to skip building the assets and just copy the ones from a previous asset build.
+
+   Note: Targets 'Install', 'Uninstall' and 'Start' will not install the dependencies.
 
 # Bug Reports and Feature Requests
 
